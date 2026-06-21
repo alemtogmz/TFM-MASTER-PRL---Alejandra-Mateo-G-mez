@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Línea temporal CSS</title>
+  <style>
+    :root {
+      --fase-proy: #004a7c;
+      --fase-contr: #1b7c4b;
+      --fase-ejec: #d97322;
+      --fase-fin: #7b3fa3;
+      --gris-texto: #222222;
+      --gris-ref: #7a7a7a;
+      --gris-linea: #d8dbe3;
+      --rojo-doc: #a61b1b;
+      --sombra: 0 4px 10px rgba(0,0,0,0.12);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 30px 15px 60px 15px;
+      background: linear-gradient(180deg, #f5f7fb 0%, #ffffff 40%);
+      color: var(--gris-texto);
+    }
+    h1 {
+      text-align: center;
+      color: #002445;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+      font-size: 1.8rem;
+    }
+    .subtitulo {
+      text-align: center;
+      font-size: 1rem;
+      max-width: 820px;
+      margin: 0 auto 30px auto;
+      color: #666666;
+    }
+    .timeline {
+      position: relative;
+      margin: 0 auto;
+      max-width: 1000px;
+      padding: 10px 0 40px 0;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #d7dfec 0%, #f0f2f7 60%, #d7dfec 100%);
+      border-radius: 4px;
+      transform: translateX(-50%);
+    }
+    .phase {
+      position: relative;
+      width: 100%;
+      text-align: center;
+      margin: 34px 0 12px 0;
+      z-index: 1;
+    }
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.82rem;
+      border: 1px solid transparent;
+    }
+    .phase-pill span {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: currentColor;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .phase-proy .phase-pill {
+      color: var(--fase-proy);
+      border-color: rgba(0,74,124,0.25);
+    }
+    .phase-contr .phase-pill {
+      color: var(--fase-contr);
+      border-color: rgba(27,124,75,0.25);
+    }
+    .phase-ejec .phase-pill {
+      color: var(--fase-ejec);
+      border-color: rgba(217,115,34,0.25);
+    }
+    .phase-fin .phase-pill {
+      color: var(--fase-fin);
+      border-color: rgba(123,63,163,0.25);
+    }
+    .event {
+      position: relative;
+      width: 50%;
+      padding: 14px 24px;
+    }
+    .event-left {
+      left: 0;
+      text-align: right;
+    }
+    .event-right {
+      left: 50%;
+      text-align: left;
+    }
+    .event-card {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px 16px 10px 16px;
+      box-shadow: var(--sombra);
+      overflow: hidden;
+      border-left: 4px solid currentColor;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 18px rgba(0,0,0,0.18);
+    }
+    .event::before {
+      content: attr(data-hitocode);
+      position: absolute;
+      top: 20px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid currentColor;
+      z-index: 2;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .event-left::before {
+      right: -14px;
+    }
+    .event-right::before {
+      left: -14px;
+    }
+    .event-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: currentColor;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .titulo {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #222222;
+    }
+    .contenido {
+      margin-top: 6px;
+    }
+    .item {
+      margin-bottom: 10px;
+    }
+    .item:last-child {
+      margin-bottom: 0;
+    }
+    .texto {
+      color: var(--gris-texto);
+      font-size: 0.93rem;
+      line-height: 1.45;
+    }
+    .ref {
+      margin-top: 4px;
+      padding-top: 5px;
+      border-top: 1px dashed var(--gris-linea);
+      color: var(--gris-ref);
+      font-size: 0.82rem;
+      font-style: italic;
+      line-height: 1.35;
+    }
+    .doc {
+      color: var(--rojo-doc);
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .doc a {
+      color: var(--rojo-doc);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .doc a:hover {
+      text-decoration: underline;
+    }
+    .fase-proy { color: var(--fase-proy); }
+    .fase-contr { color: var(--fase-contr); }
+    .fase-ejec { color: var(--fase-ejec); }
+    .fase-fin { color: var(--fase-fin); }
+    @media (max-width: 900px) {
+      .timeline::before {
+        left: 20px;
+      }
+      .event,
+      .event-left,
+      .event-right {
+        width: 100%;
+        left: 0;
+        text-align: left;
+        padding-left: 46px;
+        padding-right: 8px;
+      }
+      .event::before {
+        left: 10px;
+        right: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<h1>Línea temporal</h1>
+<p class="subtitulo"><strong>el Coordinador de Seguridad y Salud en obras de construcción</strong></p>
+<div class="timeline">
+  <!-- FASE DE PROYECTO -->
+  <div class="phase phase-proy">
+    <div class="phase-pill">
+      <span>1</span> Fase de Proyecto
+    </div>
+  </div>
+  <div class="event event-left fase-proy" data-hitocode="P0">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">P0</div>
+        <div class="titulo">Designación del CSSFP</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El promotor designa a un CSSFP cuando en la elaboración del proyecto de obra intervengan varios proyectistas.</div>
+          <div class="ref">Artículo 3.1 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20P0%20(Acta%20designaci_n%20de%20CSSFP).docx" target="_blank" rel="noopener noreferrer">DOC. P0 (Acta designación de CSSFP)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-proy" data-hitocode="P1">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">P1</div>
+        <div class="titulo">Integración de la prevención en el proyecto</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFP coordina la aplicación de los principios generales de prevención en el proyecto, estudio o estudio básico de seguridad y salud y en las previsiones e informaciones útiles para la realización de los trabajos posteriores.</div>
+          <div class="ref">Artículo 8.3 de la Guía.</div>
+        </div>
+        <div class="item">
+          <div class="texto">Si intervienen distintos proyectistas en la redacción del proyecto, el CSSFP los coordina evitando incoherencias desde el punto de la SS.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-proy" data-hitocode="P2">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">P2</div>
+        <div class="titulo">Redacción del EBSS o ESS</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">Cuando deba existir un CSSFP, le corresponderá a éste elaborar o hacer que se elabore, bajo su responsabilidad, el ESS o el EBSS.</div>
+          <div class="ref">Artículos 5.1 y 6.1 del RD 1627/1997.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE DE CONTRATACIÓN -->
+  <div class="phase phase-contr">
+    <div class="phase-pill">
+      <span>2</span> Fase de Contratación
+    </div>
+  </div>
+  <div class="event event-right fase-contr" data-hitocode="C0">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">C0</div>
+        <div class="titulo">Designación del CSSFE</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El promotor designa a un CSSFE cuando durante la ejecución de la obra intervienen más de una empresa, o una empresa y trabajadores autónomos, o diversos trabajadores autónomos.</div>
+          <div class="ref">Artículo 3.2 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C0%20(Acta%20designaci_n%20de%20CSSFE).docx" target="_blank" rel="noopener noreferrer">DOC. C0 (Acta designación de CSSFE)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-contr" data-hitocode="C1">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">C1</div>
+        <div class="titulo">El Plan de Seguridad y Salud</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE debe aprobar el PSS elaborado por el contratista. La DF asumirá esta función cuando no fuera necesaria la designación de coordinador.</div>
+          <div class="ref">Artículo 9.c del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C1.a1%20(Acta%20de%20aprobaci_n%20del%20PSS).docx" target="_blank" rel="noopener noreferrer">DOC. C1.a1 (Acta de aprobación del PSS)</a></div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C1.a2%20(Informe%20no%20conformidad%20al%20PSS).docx" target="_blank" rel="noopener noreferrer">DOC. C1.a2 (Informe no conformidad al PSS)</a></div>
+        </div>
+        <div class="item">
+          <div class="texto">En el caso de obras de las Administraciones públicas, el PSS, con el correspondiente informe del CSSFE, se elevará para su aprobación a la Administración pública que haya adjudicado la obra.</div>
+          <div class="ref">Artículo 7.2 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C1.b%20(Informe%20positivo%20del%20PSS.%20Obra%20p_blica).docx" target="_blank" rel="noopener noreferrer">DOC. C1.b (Informe positivo del PSS. Obra pública)</a></div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE puede aprobar el PSS con anotaciones no relevantes en el LI.</div>
+        </div>
+        <div class="item">
+          <div class="texto">En el caso de obra sin proyecto, donde no aplique la redacción del PSS, el CSSFE deberá supervisar la ER o el DGP elaborado por el/los contratista/s.</div>
+          <div class="ref">Apartado 4.8 Directrices Básicas para la Integración de la PRL en Obras de Const. (INSST).</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C1.c%20(Informe%20de%20supervisi_n%20de%20ER%20o%20DGP).docx" target="_blank" rel="noopener noreferrer">DOC. C1.c (Informe de supervisión de ER o DGP)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-contr" data-hitocode="C2">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">C2</div>
+        <div class="titulo">Libro de Incidencias</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El LI debe mantenerse siempre en la obra y estar en poder del CSSFE o, cuando no fuera necesaria la designación de coordinador, en poder de la DF.</div>
+          <div class="ref">Artículo 13.3 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="texto">Efectuada una anotación en el LI, el CSSFE o, cuando no sea necesaria la designación de coordinador, la DF, deberán notificarla al contratista afectado y a los representantes de los trabajadores de éste.</div>
+          <div class="texto">En el caso de que la anotación se refiera a cualquier incumplimiento de las observaciones previamente anotadas en dicho libro, deberá remitirse una copia a la ITSS en el plazo de 24h.</div>
+          <div class="ref">Artículo 13.4 del RD 1627/1997.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-contr" data-hitocode="C3">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">C3</div>
+        <div class="titulo">Reunión previa con el Promotor</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE, antes del inicio de obra, debe reunirse con el Promotor para trasladarle sus responsabilidades.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-contr" data-hitocode="C4">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">C4</div>
+        <div class="titulo">Reunión con Contratistas y subcontratista</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE, antes del inicio de obra, debe reunirse con los contratistas y subcontratistas para explicar los criterios de coordinación preventiva, verificar la organización de la actividad preventiva en obra y aclarar el contenido del PSS.</div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE debe coordinar las actividades de la obra para garantizar que los contratistas y, en su caso, los subcontratistas y los trabajadores autónomos apliquen de manera coherente y responsable los principios de la acción preventiva.</div>
+          <div class="ref">Artículo 9.b del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20C4%20(Acta%20reuni_n%20inicial%20de%20coordinaci_n).docx" target="_blank" rel="noopener noreferrer">DOC. C4 (Acta reunión inicial de coordinación)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE DE EJECUCIÓN DE OBRA -->
+  <div class="phase phase-ejec">
+    <div class="phase-pill">
+      <span>3</span> Fase de Ejecución de Obra
+    </div>
+  </div>
+  <div class="event event-left fase-ejec" data-hitocode="E0">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E0</div>
+        <div class="titulo">Inicio de obra y CAE</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE deberá coordinar la aplicación de los principios generales de prevención y de seguridad al tomar las decisiones técnicas y de organización con el fin de planificar los distintos trabajos o fases de trabajo que vayan a desarrollarse simultánea o sucesivamente, y al estimar la duración requerida para la ejecución de estos distintos trabajos o fases de trabajo.</div>
+          <div class="ref">Artículo 9.a del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE organiza la coordinación de actividades empresariales en la obra, en el marco de las obligaciones de CAE de las empresas concurrentes.</div>
+          <div class="ref">Artículo 9.d del RD 1627/1997 y Artículo 24 de la LPRL.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20E0%20(Acta%20reuni_n%20CAE).docx" target="_blank" rel="noopener noreferrer">DOC. E0 (Acta reunión CAE)</a></div>
+        </div>
+        <div class="item">
+          <div class="texto">Las instrucciones del empresario titular se entenderán cumplidas por el promotor mediante las impartidas por el CSSFE y, cuando tal figura no exista, serán impartidas por la DF.</div>
+          <div class="ref">Disp. Adicional 1ª y Artículo 8 del RD 171/2004.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-ejec" data-hitocode="E1">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E1</div>
+        <div class="titulo">Incorporación de nueva empresa o trabajadora autónomo</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">Cada vez que se incorpora un subcontratista, autónomo o empresa concurrente, el CSSFE comprueba que han sido tenidos en cuenta los principios de la acción preventiva: coordinando las acciones y funciones de control de la aplicación correcta de los métodos de trabajo, y adoptando las medidas necesarias para que sólo las personas autorizadas puedan acceder a la obra.</div>
+          <div class="ref">Artículo 9.e y 9.f del RD 1627/1997.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-ejec" data-hitocode="E2">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E2</div>
+        <div class="titulo">Seguimiento del PSS</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El PSS podrá ser modificado por el contratista en función del proceso de ejecución de la obra, de la evolución de los trabajos y de las posibles incidencias o modificaciones que puedan surgir a lo largo de la obra, pero siempre con la aprobación expresa del CSSFE.</div>
+          <div class="ref">Artículo 7.4 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE debe aprobar las modificaciones introducidas en el PSS.</div>
+          <div class="ref">Artículo 9.c del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20E2%20(Acta%20de%20aprobaci_n%20de%20modificaciones%20al%20PSS).docx" target="_blank" rel="noopener noreferrer">DOC. E2 (Acta de aprobación de modificaciones al PSS)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-ejec" data-hitocode="E3">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E3</div>
+        <div class="titulo">Reuniones de coordinación</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE promueve reuniones de coordinación periódicas entre empresas para planificar los trabajos, revisar incidencias y analizar con los contratista la necesidad de RP.</div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE vela porque estas reuniones sean operativas.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20E3%20(Acta%20reuni_n%20de%20coordinaci_n%20peri_dica).docx" target="_blank" rel="noopener noreferrer">DOC. E3 (Acta reunión de coordinación periódica)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-ejec" data-hitocode="E4">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E4</div>
+        <div class="titulo">Libro de incidencias</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El LI, que deberá mantenerse siempre en la obra, estará en poder del CSSFE o, cuando no fuera necesaria la designación de coordinador, en poder de la DF.</div>
+          <div class="texto">El CSSFE permitirá el acceso al LI a las personas que tengan derecho a realizar anotaciones.</div>
+          <div class="ref">Artículo 13.3 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="texto">Efectuada una anotación en el LI, el CSSFE o, cuando no sea necesaria la designación de coordinador, la DF, deberán notificarla al contratista afectado y a los representantes de los trabajadores de éste.</div>
+          <div class="ref">Artículo 13.4 del RD 1627/1997.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-ejec" data-hitocode="E5">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">E5</div>
+        <div class="titulo">Paralización de los trabajos</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">Cuando el CSSFE observase incumplimiento de las medidas de SS, advertirá al contratista de ello, dejando constancia de tal incumplimiento en el LI.</div>
+          <div class="ref">Artículo 14.1 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="texto">Se faculta al CSSFE para paralizar un tajo o, en su caso, la totalidad de la obra si observara la existencia de un riesgo grave e inminente.</div>
+          <div class="ref">Artículo 14.1 de la Guía.</div>
+        </div>
+        <div class="item">
+          <div class="texto">En este supuesto, el CSSFE deberá dar cuenta a los efectos oportunos a la ITSS correspondiente, a los contratistas y, en su caso, a los subcontratistas afectados por la paralización, así como a los representantes de los trabajadores de éstos.</div>
+          <div class="ref">Artículo 14.2 del RD 1627/1997.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20E5.a%20(Acta%20de%20paralizaci_n%20de%20trabajos).docx" target="_blank" rel="noopener noreferrer">DOC. E5.a (Acta de paralización de trabajos)</a></div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20E5.b%20(Acta%20de%20reanudaci_n%20de%20trabajos).docx" target="_blank" rel="noopener noreferrer">DOC. E5.b (Acta de reanudación de trabajos)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE DE FINALIZACIÓN -->
+  <div class="phase phase-fin">
+    <div class="phase-pill">
+      <span>4</span> Fase de Finalización
+    </div>
+  </div>
+  <div class="event event-left fase-fin" data-hitocode="F0">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">F0</div>
+        <div class="titulo">El EBSS o ESS</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">En el EBSS y ESS se contemplarán las previsiones y las informaciones útiles para efectuar en su día, en las debidas condiciones de SS, los previsibles trabajos posteriores.</div>
+          <div class="ref">Artículo 5.6 y 6.3 del RD 1627/1997.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-right fase-fin" data-hitocode="F1">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">F1</div>
+        <div class="titulo">Libro de Incidencias</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">El CSSFE puede reflejar la finalización de la coordinación en el LI, dando traslado de ello al promotor y a la ITSS.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="event event-left fase-fin" data-hitocode="F2">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="tag">F2</div>
+        <div class="titulo">Cierre de la CSS</div>
+      </div>
+      <div class="contenido">
+        <div class="item">
+          <div class="texto">CSSFE mantiene sus funciones hasta la completa finalización, incluyendo trabajos residuales y remates finales. Deberá asegurar el correcto cierre de las actuaciones preventivas desarrolladas durante la ejecución de la obra, verificando que no existen situaciones de riesgo derivadas de trabajos pendientes o finales.</div>
+        </div>
+        <div class="item">
+          <div class="texto">El CSSFE puede emitir un certificado de fin de coordinación indicando la fecha y si existe alguna incidencia pendiente. Se recomienda que este informe sea entregado al promotor y a la DF.</div>
+        </div>
+        <div class="item">
+          <div class="doc"><a href="https://files.use.ai/files/chat%2Ffiles%2FDOC.%20F2%20(Acta%20de%20fin%20de%20coordinaci_n).docx" target="_blank" rel="noopener noreferrer">DOC. F2 (Acta de fin de coordinación)</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
